@@ -31,3 +31,4 @@ credentials.items()}
 		credentials = read_db_creds()
 		url = URL.create(**credentials)
 		engine = create_engine(url, echo=True)
+		return engine
