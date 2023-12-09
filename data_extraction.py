@@ -7,6 +7,7 @@ class DataExtractor:
 #import required modules
 from database_utils.py import init_db_engine
 from sqlalchemy import inspect
+import pandas as pd
 
 #function to list all the tables in the database
 	def list_db_tables():
@@ -20,5 +21,9 @@ from sqlalchemy import inspect
 			table_names += inspector.get_table_names(schema=schema)
 		print(table_names)
 		return table_names
-
+#Function to extract a db table to a pandas df
+	def read_rds_table(table_name):
+		table_df = pd.read_sql_table(table_name, engine)
+		table_df.head()
+		return table_df
 
