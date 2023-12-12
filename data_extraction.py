@@ -11,8 +11,8 @@ class DataExtractor:
 	def __init__(self):
 		self = self
 #create an instance of the DatabaseConnector class (from database_utils)
-de = DataExtractor()
-dc = DatabaseConnector()
+	de = DataExtractor()
+	dc = DatabaseConnector()
 #function to list all the tables in the database
 	def list_db_tables():
 		engine = dc.init_db_creds()
