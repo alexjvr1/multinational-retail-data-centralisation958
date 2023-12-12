@@ -8,11 +8,9 @@ import tabula
 
 #All functions related to data extraction
 class DataExtractor:
-	def __init__(self):
-		self = self
+	def __init__(self, DatabaseConnector):
 #create an instance of the DatabaseConnector class (from database_utils)
-	de = DataExtractor()
-	dc = DatabaseConnector()
+		dc = DatabaseConnector()
 #function to list all the tables in the database
 	def list_db_tables():
 		engine = dc.init_db_creds()
