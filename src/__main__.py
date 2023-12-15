@@ -1,12 +1,24 @@
 from database_utils import DatabaseConnector
 from data_extraction import DataExtractor
-from data_cleaning import DataCleaning
+#from data_cleaning import DataCleaning
 
-dc = DatabaseConnector()
+#Initiate instances of each Class
+###credentials = path to yaml file that contains the database credentials
+dc = DatabaseConnector(credentials="../db_creds.yaml")
 de = DataExtractor()
-dcln = DataCleaning()
+#dcln = DataCleaning()
 
+#Step1: read the database credentials and return a db engine that can be initialised later
+engine=dc.init_db_creds()
+print(engine)
 
+#Step2: list all the tables in the RDS database
+table_names = de.list_db_tables(engine=engine)
+print(table_names)
+
+#Step3: extract the user table to a pandas dataframe
+users_table = de.read_rds_table(engine=engine, table_name="legacy_users")
+users_table.info()
 
 
 
