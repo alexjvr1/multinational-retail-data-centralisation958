@@ -24,6 +24,10 @@ users_table.info()
 user_table_cleaned = dcln.clean_user_data(users_table)
 
 #Step5: Upload to SQL database
+dc.upload_to_db(user_table_cleaned, sql_table_name="dim_users")
+
+
+
 #def execute_main():
 
 
