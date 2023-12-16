@@ -2,10 +2,10 @@
 
 #import all dependencies
 import yaml
+import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 import pandas as pd
-from sqlalchemy import create_engine
 import psycopg2
 
 class DatabaseConnector:
@@ -40,13 +40,12 @@ class DatabaseConnector:
 		return engine
 
 #Function to upload a pandas dataframe to SQL database
-	def upload_to_db(pd_dataframe, sql_table_name):
+	def upload_to_db(self, pd_dataframe, sql_table_name):
 		pd_df = pd_dataframe
-		postgreSQLtable = sql_table_name
-		engine = create_engine('postgresql+psycopg2://postgres:password@localhost:5432/sales_data')
-		postgreSQLConnection    = engine.connect()
+		#sql_table_name = sql_table_name
+		engine = create_engine('postgresql+psycopg2://alexjvr:password@localhost:5432/sales_data')
 		try:
-			pd_df.to_sql(pd_df, postgreSQLConnection, if_exists="fail");
+			pd_df.to_sql(name=sql_table_name, con=engine, if_exists="fail");
 		except ValueError as vx:
 			print(vx)
 		except Exception as ex:
