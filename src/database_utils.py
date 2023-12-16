@@ -44,11 +44,5 @@ class DatabaseConnector:
 		pd_df = pd_dataframe
 		#sql_table_name = sql_table_name
 		engine = create_engine('postgresql+psycopg2://alexjvr:password@localhost:5432/sales_data')
-		try:
-			pd_df.to_sql(name=sql_table_name, con=engine, if_exists="fail");
-		except ValueError as vx:
-			print(vx)
-		except Exception as ex:
-			print(ex)
-		else:
-			print("PostgreSQL Table %s has been created successfully."%postgreSQLtable)
+		pd_df.to_sql(name=sql_table_name, con=engine, if_exists="replace")
+		
