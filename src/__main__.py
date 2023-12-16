@@ -27,6 +27,18 @@ user_table_cleaned = dcln.clean_user_data(users_table)
 dc.upload_to_db(user_table_cleaned, sql_table_name="dim_users")
 
 
+#Step6: Extract all the user card details from a link to a pdf and return a pd.df
+pdf_path = "https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf"
+card_details = de.retrieve_pdf_data(pdf_path=pdf_path)
+card_details.info()
+
+#Step7: Clean card details
+card_details_cleaned = dcln.clean_card_data(card_details)
+
+#Step8: Upload card details to sql database
+dc.upload_to_db(card_details_cleaned, sql_table_name="dim_card_details")
+
+#Step9: 
 
 #def execute_main():
 
