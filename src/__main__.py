@@ -1,12 +1,12 @@
 from database_utils import DatabaseConnector
 from data_extraction import DataExtractor
-#from data_cleaning import DataCleaning
+from data_cleaning import DataCleaning
 
 #Initiate instances of each Class
 ###credentials = path to yaml file that contains the database credentials
 dc = DatabaseConnector(credentials="../db_creds.yaml")
 de = DataExtractor()
-#dcln = DataCleaning()
+dcln = DataCleaning()
 
 #Step1: read the database credentials and return a db engine that can be initialised later
 engine=dc.init_db_creds()
@@ -20,8 +20,10 @@ print(table_names)
 users_table = de.read_rds_table(engine=engine, table_name="legacy_users")
 users_table.info()
 
+#Step4: clean the user table
+user_table_cleaned = dcln.clean_user_data(users_table)
 
-
+#Step5: Upload to SQL database
 #def execute_main():
 
 
