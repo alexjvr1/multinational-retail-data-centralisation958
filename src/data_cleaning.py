@@ -23,3 +23,14 @@ class DataCleaning:
 		#remove rows with NA
 		df_cleaned = df.dropna()
 		return df_cleaned
+
+	def clean_card_data(self, dataframe):
+		df=dataframe
+		#Check that card number is digits only. 
+		df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce")
+		#Check dates of expiry_date and date_payment_confirmed
+		df["expiry_date"]=pd.to_datetime(df["expiry_date"], format='%m/%y', errors="coerce").dt.strftime("%m/%y")
+		df["date_payment_confirmed"]=pd.to_datetime(df["date_payment_confirmed"], format='%Y-%m-%d', errors='coerce')
+		#remove rows with NA
+		df_cleaned = df.dropna()
+		return df_cleaned
