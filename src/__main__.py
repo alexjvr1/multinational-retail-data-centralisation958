@@ -38,7 +38,31 @@ card_details_cleaned = dcln.clean_card_data(card_details)
 #Step8: Upload card details to sql database
 dc.upload_to_db(card_details_cleaned, sql_table_name="dim_card_details")
 
-#Step9: 
+#Step9: Retrieve the store information from an API
+    #9.1: Define a header dictionary
+api_header_dict = {"x-api-key":"yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX"}
+
+    #9.2: Define the end points to return the number of stores
+number_of_stores_endpoint="https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores"
+
+    #9.3: Retrieve the number of stores
+number_of_stores=de.list_number_of_stores(number_of_stores_endpoint, api_header_dict)
+print("Total number of stores:"+number_of_stores)
+
+    #9.4: Define the end point for the store date by specifying the number of stores
+retrieve_stores_endpoint="https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/"
+
+    #9.4: Loop through urls for each store to retrieve store information and return a pandas df
+store_data=de.retrieve_stores_data(retrieve_stores_endpoint, api_header_dict, number_of_stores)
+store_data.info()
+
+#Step 10: Clean store information
+
+
+#Step 11: Upload store information to sql database
+
+
+
 
 #def execute_main():
 
