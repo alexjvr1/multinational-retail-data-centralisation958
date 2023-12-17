@@ -38,7 +38,7 @@ class DataCleaning:
 	def clean_store_data(self, dataframe):
 		df=dataframe
 		#remove empty lat column. A complete latitude column is available
-		df.drop(["lat"], axis=1)
+		df = df.drop(["lat"], axis=1)
 		#remove nonsense addresses defined as rows with just a single string (no "\n")
 		df = df[df["address"].str.contains("\n")]
 		#Clean longitude and latitude to include only numbers. 
@@ -49,7 +49,7 @@ class DataCleaning:
 		#Staff_numbers: remove rows that aren't integers
 		df["staff_numbers"] = df["staff_numbers"].apply(pd.to_numeric, errors="coerce")
 		#Ensure all store codes include a hyphen ("-"). Remove rows that do not
-		df = df[df["store_codes"].str.contains("-")]
+		df = df[df["store_code"].str.contains("-")]
 		#Store type: remove anything that isn't one of ['Local', 'Super Store', 'Mall Kiosk', 'Outlet']
 		df = df[df["store_type"].str.contains("Local|Super Store|Mall Kiosk|Outlet")]
 		#country code: remove anything that isn't ['GB', 'DE', 'US']
