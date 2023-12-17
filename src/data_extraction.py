@@ -39,7 +39,8 @@ class DataExtractor:
 	def list_number_of_stores(self, number_of_stores_endpoint, api_header_dict):
 		url = number_of_stores_endpoint
 		header_dict = api_header_dict
-		number_of_stores=requests.get(url, headers=header_dict)
+		response=requests.get(url, headers=header_dict).json()
+		number_of_stores = response["number_stores"]
 		return number_of_stores
 
 #Function to return the store data for the stores found in list_number_of_stores
