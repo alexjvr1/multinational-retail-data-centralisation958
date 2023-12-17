@@ -47,7 +47,7 @@ number_of_stores_endpoint="https://aqj7u5id95.execute-api.eu-west-1.amazonaws.co
 
     #9.3: Retrieve the number of stores
 number_of_stores=de.list_number_of_stores(number_of_stores_endpoint, api_header_dict)
-print("Total number of stores:"+number_of_stores)
+print("Total number of stores:"+str(number_of_stores))
 
     #9.4: Define the end point for the store date by specifying the number of stores
 retrieve_stores_endpoint="https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/"
@@ -57,10 +57,11 @@ store_data=de.retrieve_stores_data(retrieve_stores_endpoint, api_header_dict, nu
 store_data.info()
 
 #Step 10: Clean store information
-
+store_data_cleaned = dcln.clean_store_data(store_data)
+store_data_cleaned.info()
 
 #Step 11: Upload store information to sql database
-
+dc.upload_to_db(store_data_cleaned, sql_table_name="dim_store_details")
 
 
 
