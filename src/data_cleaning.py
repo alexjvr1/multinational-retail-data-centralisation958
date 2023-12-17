@@ -34,3 +34,31 @@ class DataCleaning:
 		#remove rows with NA
 		df_cleaned = df.dropna()
 		return df_cleaned
+	
+	def clean_store_data(self, dataframe):
+		df=dataframe
+		#remove empty lat column. A complete latitude column is available
+		df.drop(["lat"], axis=1)
+		#remove nonsense addresses defined as rows with just a single string (no "\n")
+		df = df[df["address"].str.contains("\n")]
+		#Clean longitude and latitude to include only numbers. 
+		df["longitude"] = df["longitude"].apply(pd.to_numeric, errors="coerce")
+		df["latitude"] = df["latitude"].apply(pd.to_numeric, errors="coerce")
+		#Locality: Remove nonsense submissions
+		df = df[df["locality"].str.contains(r"^[a-zA-Z\s-]*$", regex=True)]
+		#Staff_numbers: remove rows that aren't integers
+		df["staff_numbers"] = df["staff_numbers"].apply(pd.to_numeric, errors="coerce")
+		#Ensure all store codes include a hyphen ("-"). Remove rows that do not
+		df = df[df["store_codes"].str.contains("-")]
+		#Store type: remove anything that isn't one of ['Local', 'Super Store', 'Mall Kiosk', 'Outlet']
+		df = df[df["store_type"].str.contains("Local|Super Store|Mall Kiosk|Outlet")]
+		#country code: remove anything that isn't ['GB', 'DE', 'US']
+		df = df[df["country_code"].str.contains("GB|DE|US")]
+		#continent: Remove type ("ee" at start of word). And remove anything that isn't ["Europe", "America"]
+		df["continent"] = df["continent"].str.replace('^ee', '', regex=True)
+		df = df[df["continent"].str.contains("Europe|America")]
+		#convert opening_date to datetime
+		df["opening_date"]=pd.to_datetime(df["opening_date"], format='%Y-%m-%d', errors='coerce')
+		#remove rows with NA
+		df_cleaned = df.dropna()
+		return df_cleaned
