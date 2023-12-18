@@ -7,6 +7,7 @@ import pandas as pd
 import tabula
 from database_utils import DatabaseConnector
 import requests
+import boto3
 
 #All functions related to data extraction
 class DataExtractor:
@@ -54,3 +55,14 @@ class DataExtractor:
 		#convert to pandas df
 		store_data_df = pd.DataFrame.from_records(store_data)
 		return store_data_df
+	
+#Function to retrieve csv data from an S3 bucket on AWS
+	def extract_from_s3(self, s3_address):
+		#s3://data-handling-public/products.csv address to use in example
+		#extract information from the s3_address variable
+		bucket = s3_address
+		object_key = s3_address
+		#create an instance of the s3 client. Use client
+		s3 = boto3.client('s3')
+		s3.download_file(bucket, s3_address, "test.csv")
+		
