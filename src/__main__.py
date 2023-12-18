@@ -64,10 +64,14 @@ store_data_cleaned.info()
 dc.upload_to_db(store_data_cleaned, sql_table_name="dim_store_details")
 
 
+#Step 12: Extract product details from S3 bucket
+product_details = de.extract_from_s3("s3://data-handling-public/products.csv")
+product_details.info()
+
+
+
 
 #def execute_main():
-
-
 
 
 #if __name__ == "__main__":  # Condition to ensure module is executed not imported. 
