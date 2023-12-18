@@ -60,9 +60,10 @@ class DataExtractor:
 	def extract_from_s3(self, s3_address):
 		#s3://data-handling-public/products.csv address to use in example
 		#extract information from the s3_address variable
-		bucket = s3_address
-		object_key = s3_address
+		#bucket = s3_address
+		#object_key = s3_address
 		#create an instance of the s3 client. Use client
-		s3 = boto3.client('s3')
-		s3.download_file(bucket, s3_address, "test.csv")
-		
+		#s3 = boto3.client('s3')
+		#s3.download_file(bucket, s3_address, "test.csv")
+		df = pd.read_csv(s3_address)
+		return df
