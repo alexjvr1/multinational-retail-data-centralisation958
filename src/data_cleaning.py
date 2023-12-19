@@ -89,3 +89,15 @@ class DataCleaning:
 		return products_df_kg
 	
 	def clean_products_data(self, products_df_kg):
+		df = products_df_kg
+		#drop column that repeats index
+		df.pop("Unnamed: 0")
+		#Remove nonsense entries in product_price
+		df = df[df["product_price"].str.contains(r"^£", na=False)]
+		#Remove nonsense entries in category
+		df = df[df["category"].str.contains("toys-and-games|sports-and-leisure|pets|homeware|health-and-beauty|food-and-drink|diy", na=False)]
+		#Change date added to datetime
+		df["date_added"]=pd.to_datetime(df["date_added"], format='%Y-%m-%d', errors='coerce')
+		#Remove all missing data
+		df_cleaned = df.dropna()
+		return df_cleaned
