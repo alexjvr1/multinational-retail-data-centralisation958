@@ -62,3 +62,30 @@ class DataCleaning:
 		#remove rows with NA
 		df_cleaned = df.dropna()
 		return df_cleaned
+	
+#Function takes a products pd.df and converts all weights to kg. It returns a pd.df
+	def convert_product_weights(self, products_df):
+		#split weights column to have units in a new column
+		pattern = '(\\D*$)'  #find any letters at the end of the string
+		products_df["units"] = products_df["weight"].str.extract(pat, expand=False)
+		#Replace weight column by excluding units
+		products_df["weight"] = products_df["weight"].str.replace(pattern, '', regex=True)
+		#For all cells containing x (multiplication), calculate the final weight
+			#First split all cells by x and create a new column. Replace all empty cells with 1 for multiplication
+		temp = products_df["weight"].str.split("x", expand=True).replace(np.nan, 1)
+			#Remove all non numeric rows
+		temp[0] = temp[0].apply(pd.to_numeric, errors="coerce")
+		temp[1] = temp[1].apply(pd.to_numeric, errors="coerce")
+			#Create a third new column with the final product
+		products_df["final_weight"] = (pd.to_numeric(temp[0]))*(pd.to_numeric(temp[1]))
+		#change all ml to g. 
+		products_df["units"] = products_df["units"].str.replace("ml", "g")
+		#change all l to kg
+		products_df["units"] = products_df["units"].str.replace("l", "kg")
+		#convert all g to kg 
+		products_df.loc[products_df["units"]=="g", "final_weight"] = products_df["final_weight"]/1000
+		#change all numbers to float with 2 decimal places.
+		products_df["final_weight"] = products_df["final_weight"].astype(float)
+		return products_df_kg
+	
+	def clean_products_data(self, products_df_kg):
