@@ -90,7 +90,8 @@ class DataCleaning:
 		#Remove "weight" column and rename "final_weight" column to "weight"
 		products_df.pop("weight")
 		products_df.rename(columns={"final_weight":"weight"})
-		return products_df_kg
+		products_df_kg = products_df.dropna()
+		return products_df
 	
 	def clean_products_data(self, products_df_kg):
 		df = products_df_kg
@@ -103,5 +104,17 @@ class DataCleaning:
 		#Change date added to datetime
 		df["date_added"]=pd.to_datetime(df["date_added"], format='%Y-%m-%d', errors='coerce')
 		#Remove all missing data
+		df_cleaned = df.dropna()
+		return df_cleaned
+	
+	def clean_orders_table(self, orders_table):
+		df = orders_table
+		#remove three columns
+		df = df.drop(["level_0","first_name", "last_name", "1"], axis=1)
+		df_cleaned = df.dropna()
+		return df_cleaned
+	
+	def clean_date_details(self, date_details):
+		df = date_details
 		df_cleaned = df.dropna()
 		return df_cleaned
