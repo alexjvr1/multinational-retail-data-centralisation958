@@ -77,6 +77,31 @@ product_details_cleaned = dcln.clean_products_data(product_details_kg)
 #Step 15: Upload product details df to SQL datbase
 dc.upload_to_db(product_details_cleaned, sql_table_name="dim_products")
 
+#Step 16: List all available data tables to get the name of the orders table
+engine=dc.init_db_creds()
+table_names = de.list_db_tables(engine)
+print(table_names)
+
+#Step 17: Extract the orders table to a pandas df
+orders_table = de.read_rds_table("orders_table", engine)
+
+#Step 18: Clean orders_table
+
+
+#Step 19: Upload the orders table to the sql database
+*dc.upload_to_db(orders_table_cleaned, sql_table_name="orders_table")
+
+#Step 20: Extract the details of when each sale occurred: 
+date_details = de.extract_from_s3("https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json")
+date_details.info()
+
+#Step 21: Clean date_details
+**date_details_cleaned = dcln.clean_date_details(date_details)
+
+#Step 22: Upload the date_details table to the sql database
+**dc.upload_to_db(date_details_cleaned, sql_table_name="dim_date_times")
+
+
 #def execute_main():
 
 
