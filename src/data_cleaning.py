@@ -3,6 +3,7 @@
 #import all dependencies
 from datetime import datetime
 import pandas as pd
+import numpy as np
 
 #All functions related to data cleaning
 class DataCleaning: 
@@ -86,6 +87,9 @@ class DataCleaning:
 		products_df.loc[products_df["units"]=="g", "final_weight"] = products_df["final_weight"]/1000
 		#change all numbers to float with 2 decimal places.
 		products_df["final_weight"] = products_df["final_weight"].astype(float)
+		#Remove "weight" column and rename "final_weight" column to "weight"
+		products_df.pop("weight")
+		products_df.rename(columns={"final_weight":"weight"})
 		return products_df_kg
 	
 	def clean_products_data(self, products_df_kg):
