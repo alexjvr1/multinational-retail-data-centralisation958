@@ -68,8 +68,14 @@ dc.upload_to_db(store_data_cleaned, sql_table_name="dim_store_details")
 product_details = de.extract_from_s3("s3://data-handling-public/products.csv")
 product_details.info()
 
+#Step 13: Change all weights to kg in product details df
+product_details_kg = dcln.convert_product_weights(product_details)
 
+#Step 14: Clean product_details df
+product_details_cleaned = dcln.clean_products_data(product_details_kg)
 
+#Step 15: Upload product details df to SQL datbase
+dc.upload_to_db(product_details_cleaned, sql_table_name="dim_products")
 
 #def execute_main():
 
