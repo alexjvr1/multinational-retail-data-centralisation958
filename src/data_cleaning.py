@@ -67,7 +67,7 @@ class DataCleaning:
 	def convert_product_weights(self, products_df):
 		#split weights column to have units in a new column
 		pattern = '(\\D*$)'  #find any letters at the end of the string
-		products_df["units"] = products_df["weight"].str.extract(pat, expand=False)
+		products_df["units"] = products_df["weight"].str.extract(pattern, expand=False)
 		#Replace weight column by excluding units
 		products_df["weight"] = products_df["weight"].str.replace(pattern, '', regex=True)
 		#For all cells containing x (multiplication), calculate the final weight
