@@ -86,20 +86,24 @@ print(table_names)
 orders_table = de.read_rds_table("orders_table", engine)
 
 #Step 18: Clean orders_table
-
+orders_table_cleaned = dcln.clean_orders_table(orders_table)
 
 #Step 19: Upload the orders table to the sql database
-*dc.upload_to_db(orders_table_cleaned, sql_table_name="orders_table")
+dc.upload_to_db(orders_table_cleaned, sql_table_name="orders_table")
 
 #Step 20: Extract the details of when each sale occurred: 
-date_details = de.extract_from_s3("https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json")
-date_details.info()
+s3_address = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
+date_details = de.extract_from_s3(s3_address)
+#date_details.info()
+
 
 #Step 21: Clean date_details
-**date_details_cleaned = dcln.clean_date_details(date_details)
+#date_details_cleaned = dcln.clean_date_details(date_details)
+
 
 #Step 22: Upload the date_details table to the sql database
-**dc.upload_to_db(date_details_cleaned, sql_table_name="dim_date_times")
+#dc.upload_to_db(date_details_cleaned, sql_table_name="dim_date_times")
+
 
 
 #def execute_main():
