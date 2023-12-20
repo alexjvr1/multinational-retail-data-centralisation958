@@ -8,6 +8,8 @@ import tabula
 from database_utils import DatabaseConnector
 import requests
 import boto3
+import json
+import re
 
 #All functions related to data extraction
 class DataExtractor:
@@ -58,12 +60,17 @@ class DataExtractor:
 	
 #Function to retrieve csv data from an S3 bucket on AWS
 	def extract_from_s3(self, s3_address):
-		#s3://data-handling-public/products.csv address to use in example
-		#extract information from the s3_address variable
-		#bucket = s3_address
-		#object_key = s3_address
-		#create an instance of the s3 client. Use client
-		#s3 = boto3.client('s3')
-		#s3.download_file(bucket, s3_address, "test.csv")
 		df = pd.read_csv(s3_address)
 		return df
+	
+	def extract_json_from_s3(self, s3_address):
+		#extract information from the s3_address variable using ?P to label the captured variables
+		match = re.search(r'w*\:\/\/(?P<bucket>\w.*)\/(?P<object_key>\w.*)', s3_address)
+		bucket = match.group('bucket')
+		object_key = match.group('object_key')
+		#create an instance of the s3 client. Use client
+		s3 = boto3.resource('s3')
+		content_object = s3.Object(bucket, object_key)
+		file_content = content_object.get()['Body'].read().decode('utf-8')
+		json_content = json.loads(file_content)
+		print(json_content['Details'])
