@@ -21,6 +21,7 @@ class DataCleaning:
 		df["phone_number"]=(df["phone_number"].apply(lambda x: ''.join([i for i in x if str.isnumeric(i)])))
 		#shorten to the correct number of digits based on the country code
 		#df["phone_number"]=df.apply(df["phone_number"][-9:] if df["country_code"]=="DE" else df["phone_number"][-11:], axis=1)
+		df["country_code"]=df["country_code"].replace("GGB", "GB")
 		#remove rows with NA
 		df_cleaned = df.dropna()
 		return df_cleaned
@@ -39,9 +40,9 @@ class DataCleaning:
 	def clean_store_data(self, dataframe):
 		df=dataframe
 		#remove empty lat column. A complete latitude column is available
-		df = df.drop(["lat"], axis=1)
+		#df = df.drop(["lat"], axis=1)  #removed this drop because the course requires us to merge the lat columns in SQL
 		#remove nonsense addresses defined as rows with just a single string (no "\n")
-		df = df[df["address"].str.contains("\n")]
+		df = df[df["address"].str.contains("\n", regex=True)]
 		#Clean longitude and latitude to include only numbers. 
 		df["longitude"] = df["longitude"].apply(pd.to_numeric, errors="coerce")
 		df["latitude"] = df["latitude"].apply(pd.to_numeric, errors="coerce")
@@ -61,7 +62,7 @@ class DataCleaning:
 		#convert opening_date to datetime
 		df["opening_date"]=pd.to_datetime(df["opening_date"], format='%Y-%m-%d', errors='coerce')
 		#remove rows with NA
-		df_cleaned = df.dropna()
+		#df_cleaned = df.dropna() #removed this so that we can keep the empty lat column
 		return df_cleaned
 	
 #Function takes a products pd.df and converts all weights to kg. It returns a pd.df
