@@ -91,23 +91,24 @@ orders_table_cleaned = dcln.clean_orders_table(orders_table)
 #Step 19: Upload the orders table to the sql database
 dc.upload_to_db(orders_table_cleaned, sql_table_name="orders_table")
 
-#Step 20: Extract the details of when each sale occurred: 
+#Step 20: Extract the details of when each sale occurred and return a pandas dataframe: 
 s3_address = "https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json"
-date_details = de.extract_from_s3(s3_address)
-#date_details.info()
+date_details = de.extract_json_from_s3(s3_address)
+
+date_details.info()
 
 
 #Step 21: Clean date_details
-#date_details_cleaned = dcln.clean_date_details(date_details)
+date_details_cleaned = dcln.clean_date_details(date_details)
 
 
 #Step 22: Upload the date_details table to the sql database
-#dc.upload_to_db(date_details_cleaned, sql_table_name="dim_date_times")
+dc.upload_to_db(date_details_cleaned, sql_table_name="dim_date_times")
 
 
 
 #def execute_main():
 
 
-#if __name__ == "__main__":  # Condition to ensure module is executed not imported. 
-#    execute_main()
+if __name__ == "__main__":  # Condition to ensure module is executed not imported. 
+    execute_main()
