@@ -29,7 +29,7 @@ class DataCleaning:
 	def clean_card_data(self, dataframe):
 		df=dataframe
 		#Check that card number is digits only. 
-		df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce")
+		df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64")
 		#Check dates of expiry_date and date_payment_confirmed
 		df["expiry_date"]=pd.to_datetime(df["expiry_date"], format='%m/%y', errors="coerce").dt.strftime("%m/%y")
 		df["date_payment_confirmed"]=pd.to_datetime(df["date_payment_confirmed"], format='%Y-%m-%d', errors='coerce')
@@ -120,7 +120,7 @@ class DataCleaning:
 		#day, month and year contains only digits
 		df["day"]=pd.to_numeric(df["day"], errors="coerce").astype('Int64')
 		df["month"]=pd.to_numeric(df["month"], errors="coerce").astype('Int64')
-		df["year"]=pd.to_numeric(df["year"], errors="coerce").astype(Int64)
+		df["year"]=pd.to_numeric(df["year"], errors="coerce").astype('Int64')
 		#Time-period: remove anything that isn't one of ['Morning', 'Midday', 'Late_Hours', 'Evening']
 		df = df[df["time_period"].str.contains("Morning|Midday|Evening|Late_Hours")]
 		#uuid: keep only lines that do not contain capital letters
