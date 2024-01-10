@@ -186,6 +186,56 @@ SET bool = CASE
 			WHEN still_available = 'Removed' THEN False
 			END; 
 
+--Remove still_available column and rename bool to still_available
+ALTER TABLE dim_products
+DROP still_available;
+
+ALTER TABLE dim_products
+RENAME COLUMN bool TO still_available; 
+
 /* Task 6: dim_date_times 
 Step 10: update column data types */
 
+ALTER TABLE dim_date_times
+ALTER COLUMN month TYPE VARCHAR(2) USING month::VARCHAR(2);
+
+ALTER TABLE dim_date_times
+ALTER COLUMN year TYPE VARCHAR(4) USING year::VARCHAR(4);
+
+ALTER TABLE dim_date_times
+ALTER COLUMN day TYPE VARCHAR(2) USING day::VARCHAR(2);
+
+ALTER TABLE dim_date_times
+ALTER COLUMN time_period TYPE VARCHAR(10) USING time_period::VARCHAR(10);
+
+ALTER TABLE dim_date_times
+ALTER COLUMN date_uuid TYPE UUID USING date_uuid::UUID;
+
+/* Task 7: dim_card_details
+Step 11: update column data types */
+
+ALTER TABLE dim_card_details
+ALTER COLUMN card_number TYPE VARCHAR(19) USING card_number::VARCHAR(19); --length determined while editing orders_table
+
+ALTER TABLE dim_card_details
+ALTER COLUMN expiry_date TYPE VARCHAR(5) USING expiry_date::VARCHAR(5); --determined by inspecting the table in postgres
+
+ALTER TABLE dim_card_details
+ALTER COLUMN date_payment_confirmed TYPE DATE USING date_payment_confirmed::DATE;
+
+
+/* Task 8: Add primary keys to all dim_ tables. The primary key column in each table matches a column in orders_table*/
+ALTER TABLE dim_date_times
+ADD PRIMARY KEY (date_uuid);
+
+ALTER TABLE dim_card_details
+ADD PRIMARY KEY (card_number);
+
+ALTER TABLE dim_users
+ADD PRIMARY KEY (user_uuid);
+
+ALTER TABLE dim_store_details
+ADD PRIMARY KEY (store_code)
+
+ALTER TABLE dim_products
+ADD PRIMARY KEY (product_code)
