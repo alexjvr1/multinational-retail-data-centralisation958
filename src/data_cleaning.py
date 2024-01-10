@@ -117,5 +117,13 @@ class DataCleaning:
 	
 	def clean_date_details(self, date_details):
 		df = date_details
+		#day, month and year contains only digits
+		df["day"]=pd.to_numeric(df["day"], errors="coerce")
+		df["month"]=pd.to_numeric(df["month"], errors="coerce")
+		df["year"]=pd.to_numeric(df["year"], errors="coerce")
+		#Time-period: remove anything that isn't one of ['Morning', 'Midday', 'Late_Hours', 'Evening']
+		df = df[df["time_period"].str.contains("Morning|Midday|Evening|Late_Hours")]
+		#uuid: keep only lines that do not contain capital letters
+		df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)]
 		df_cleaned = df.dropna()
 		return df_cleaned
