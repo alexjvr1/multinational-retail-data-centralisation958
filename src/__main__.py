@@ -24,7 +24,7 @@ users_table.info()
 user_table_cleaned = dcln.clean_user_data(users_table)
 
 #Step5: Upload to SQL database
-dc.upload_to_db(user_table_cleaned, sql_table_name="dim_users")
+dc.upload_to_db(user_table_cleaned, sql_table_name="dim_users_table")
 
 
 #Step6: Extract all the user card details from a link to a pdf and return a pd.df
