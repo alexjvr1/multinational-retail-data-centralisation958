@@ -26,6 +26,7 @@ class DataCleaning:
 		df = df[df["user_uuid"].str.contains("-")]
 		#remove rows with NA
 		#df_cleaned = df.dropna()  #step removed because it removes too many useful entries
+		df_cleaned= df
 		return df_cleaned
 
 	def clean_card_data(self, dataframe):
@@ -36,7 +37,8 @@ class DataCleaning:
 		df["expiry_date"]=pd.to_datetime(df["expiry_date"], format='%m/%y', errors="coerce").dt.strftime("%m/%y")
 		df["date_payment_confirmed"]=pd.to_datetime(df["date_payment_confirmed"], format='%Y-%m-%d', errors='coerce')
 		#remove rows with NA
-		df_cleaned = df.dropna()
+		#df_cleaned = df.dropna() #removed step because it removes too many entries
+		df_cleaned = df
 		return df_cleaned
 	
 	def clean_store_data(self, dataframe):
@@ -65,6 +67,7 @@ class DataCleaning:
 		df["opening_date"]=pd.to_datetime(df["opening_date"], format='%Y-%m-%d', errors='coerce')
 		#remove rows with NA
 		#df_cleaned = df.dropna() #removed this so that we can keep the empty lat column
+		df_cleaned=df
 		return df_cleaned
 	
 #Function takes a products pd.df and converts all weights to kg. It returns a pd.df
@@ -96,8 +99,8 @@ class DataCleaning:
 		products_df_kg = products_df.dropna()
 		return products_df
 	
-	def clean_products_data(self, products_df_kg):
-		df = products_df_kg
+	def clean_products_data(self, product_df_kg):
+		df = product_df_kg
 		#drop column that repeats index
 		df.pop("Unnamed: 0")
 		#Remove nonsense entries in product_price
@@ -107,14 +110,22 @@ class DataCleaning:
 		#Change date added to datetime
 		df["date_added"]=pd.to_datetime(df["date_added"], format='%Y-%m-%d', errors='coerce')
 		#Remove all missing data
-		df_cleaned = df.dropna()
+		#df_cleaned = df.dropna() #Remove command because it removes too many useful entries
+		df_cleaned= df
 		return df_cleaned
 	
 	def clean_orders_table(self, orders_table):
 		df = orders_table
 		#remove three columns
 		df = df.drop(["level_0","first_name", "last_name", "1"], axis=1)
-		df_cleaned = df.dropna()
+		#Remove nonsense entries in each column to match other data_frames
+		df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)] #match dim_date_times
+		df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64") #match dim_card_details
+		df["product_code"] = #match dim_products
+		df = df[df["store_code"].str.contains("-")] #match dim_store_details
+		df = df[df["user_uuid"].str.contains("-")] #match dim_users_table
+		#df_cleaned = df.dropna() #remove step as it excludes too many entries with useful information
+		df_cleaned = df
 		return df_cleaned
 	
 	def clean_date_details(self, date_details):
@@ -127,5 +138,6 @@ class DataCleaning:
 		df = df[df["time_period"].str.contains("Morning|Midday|Evening|Late_Hours")]
 		#uuid: keep only lines that do not contain capital letters
 		df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)]
-		df_cleaned = df.dropna()
+		#df_cleaned = df.dropna() #remove line because it removes too many useful entries
+		df_cleaned= df
 		return df_cleaned
