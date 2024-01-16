@@ -46,23 +46,25 @@ class DataCleaning:
 		#remove empty lat column. A complete latitude column is available
 		#df = df.drop(["lat"], axis=1)  #removed this drop because the course requires us to merge the lat columns in SQL
 		#remove nonsense addresses defined as rows with just a single string (no "\n")
-		df = df[df["address"].str.contains("\n", regex=True)]
+		#df = df[df["address"].str.contains("\n", regex=True)]  #removes the web orders
+		df.address = np.where(~df.address.str.contains("\n", regex=True), np.nan, df.address)
 		#Clean longitude and latitude to include only numbers. 
 		df["longitude"] = df["longitude"].apply(pd.to_numeric, errors="coerce")
 		df["latitude"] = df["latitude"].apply(pd.to_numeric, errors="coerce")
 		#Locality: Remove nonsense submissions
-		df = df[df["locality"].str.contains(r"^[a-zA-Z\s-]*$", regex=True)]
+		#df = df[df["locality"].str.contains(r"^[a-zA-Z\s-]*$", regex=True)]  #This removes the web orders
+		df.locality = np.where(~df.locality.str.contains(r"^[a-zA-Z\s-]*$", regex=True), np.nan, df.locality)
 		#Staff_numbers: remove rows that aren't integers
 		df["staff_numbers"] = df["staff_numbers"].apply(pd.to_numeric, errors="coerce")
 		#Ensure all store codes include a hyphen ("-"). Remove rows that do not
-		df = df[df["store_code"].str.contains("-")]
+		df["store_code"] = np.where(df["store_code"].str.contains("-"), df["store_code"], np.nan)
 		#Store type: remove anything that isn't one of ['Local', 'Super Store', 'Mall Kiosk', 'Outlet']
-		df = df[df["store_type"].str.contains("Local|Super Store|Mall Kiosk|Outlet")]
+		df["store_type"] = np.where(df["store_type"].str.contains("Local|Super Store|Mall Kiosk|Outlet"), df["store_type"], np.nan)
 		#country code: remove anything that isn't ['GB', 'DE', 'US']
-		df = df[df["country_code"].str.contains("GB|DE|US")]
+		df["country_code"] = np.where(df["country_code"].str.contains("GB|DE|US"),df["country_code"], np.nan)
 		#continent: Remove type ("ee" at start of word). And remove anything that isn't ["Europe", "America"]
 		df["continent"] = df["continent"].str.replace('^ee', '', regex=True)
-		df = df[df["continent"].str.contains("Europe|America")]
+		df["continent"] = np.where(df["continent"].str.contains("Europe|America"), df["continent"], np.nan)
 		#convert opening_date to datetime
 		df["opening_date"]=pd.to_datetime(df["opening_date"], format='%Y-%m-%d', errors='coerce')
 		#remove rows with NA
