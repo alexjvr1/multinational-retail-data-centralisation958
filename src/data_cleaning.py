@@ -121,11 +121,12 @@ class DataCleaning:
 		#remove three columns
 		df = df.drop(["level_0","first_name", "last_name", "1"], axis=1)
 		#Remove nonsense entries in each column to match other data_frames
-		df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)] #match dim_date_times
+		#df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)] #changed this to assign to a specific column rather than subset the df 
+		df["date_uuid"] = np.where(~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["date_uuid"]) #match dim_date_times
 		df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64") #match dim_card_details
 		df["product_code"] = #match dim_products
-		df = df[df["store_code"].str.contains("-")] #match dim_store_details
-		df = df[df["user_uuid"].str.contains("-")] #match dim_users_table
+		df["store_code"] = np.where(df["store_code"].str.contains("-"), df["store_code"], np.nan) #match dim_store_details
+		df["user_uuid"] = np.where(df["user_uuid"].str.contains("-"), df["user_uuid"], np.nan) #match dim_users_table
 		#df_cleaned = df.dropna() #remove step as it excludes too many entries with useful information
 		df_cleaned = df
 		return df_cleaned
@@ -137,9 +138,9 @@ class DataCleaning:
 		df["month"]=pd.to_numeric(df["month"], errors="coerce").astype('Int64')
 		df["year"]=pd.to_numeric(df["year"], errors="coerce").astype('Int64')
 		#Time-period: remove anything that isn't one of ['Morning', 'Midday', 'Late_Hours', 'Evening']
-		df = df[df["time_period"].str.contains("Morning|Midday|Evening|Late_Hours")]
+		df["time_period"] = np.where(df["time_period"].str.contains("Morning|Midday|Evening|Late_Hours"), df["time_period"], np.nan)
 		#uuid: keep only lines that do not contain capital letters
-		df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)]
+		df["date_uuid"] = np.where(~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["date_uuid"])
 		#df_cleaned = df.dropna() #remove line because it removes too many useful entries
 		df_cleaned= df
 		return df_cleaned
