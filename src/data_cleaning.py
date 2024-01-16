@@ -22,8 +22,10 @@ class DataCleaning:
 		#shorten to the correct number of digits based on the country code
 		#df["phone_number"]=df.apply(df["phone_number"][-9:] if df["country_code"]=="DE" else df["phone_number"][-11:], axis=1)
 		df["country_code"]=df["country_code"].replace("GGB", "GB")
+		#Remove all nonsense uuid
+		df = df[df["user_uuid"].str.contains("-")]
 		#remove rows with NA
-		df_cleaned = df.dropna()
+		#df_cleaned = df.dropna()  #step removed because it removes too many useful entries
 		return df_cleaned
 
 	def clean_card_data(self, dataframe):
