@@ -52,7 +52,7 @@ class DataExtractor:
 		header_dict=api_header_dict  #authentication key for access to the end point
 		store_data=[]   #create an empty list where all the store date will be stored
 		#loop through the urls to retrieve store data for each store and appends as a json object to the list
-		for i in range(1,number_of_stores):  
+		for i in range(0,number_of_stores):  
 			store_data.append(requests.get(url=(url+str(i)), headers=header_dict).json())
 		#convert to pandas df
 		store_data_df = pd.DataFrame.from_records(store_data)
