@@ -32,7 +32,9 @@ class DataCleaning:
 	def clean_card_data(self, dataframe):
 		df=dataframe
 		#Check that card number is digits only. 
-		df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64")
+		#df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64") #Some of the correct card numbers contain special characters which just need to be stripped. This removes them from the dataset
+		df["card_number"]=df["card_number"].str.replace("?", "") #Removes any "?"
+		df["card_number"] = np.where(df["card_number"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["card_number"]) #Replaces nonsense entries that are just capital letters
 		#Check dates of expiry_date and date_payment_confirmed
 		df["expiry_date"]=pd.to_datetime(df["expiry_date"], format='%m/%y', errors="coerce").dt.strftime("%m/%y")
 		df["date_payment_confirmed"]=pd.to_datetime(df["date_payment_confirmed"], format='%Y-%m-%d', errors='coerce')
@@ -122,9 +124,11 @@ class DataCleaning:
 		df = df.drop(["level_0","first_name", "last_name", "1"], axis=1)
 		#Remove nonsense entries in each column to match other data_frames
 		#df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)] #changed this to assign to a specific column rather than subset the df 
-		df["date_uuid"] = np.where(~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["date_uuid"]) #match dim_date_times
-		df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64") #match dim_card_details
-		df["product_code"] = #match dim_products
+		df["date_uuid"] = np.where(df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["date_uuid"]) #match dim_date_times
+		#df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64") #match dim_card_details. Removed because some card numbers contain special characters and just need to be stripped not replaced with Nan
+		df["card_number"]=df["card_number"].str.replace("?", "") #match dim_card_details
+		df["card_number"] = np.where(df["card_number"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["card_number"])
+		#df["product_code"] = #match dim_products. Nothing done to product_code
 		df["store_code"] = np.where(df["store_code"].str.contains("-"), df["store_code"], np.nan) #match dim_store_details
 		df["user_uuid"] = np.where(df["user_uuid"].str.contains("-"), df["user_uuid"], np.nan) #match dim_users_table
 		#df_cleaned = df.dropna() #remove step as it excludes too many entries with useful information
@@ -140,7 +144,7 @@ class DataCleaning:
 		#Time-period: remove anything that isn't one of ['Morning', 'Midday', 'Late_Hours', 'Evening']
 		df["time_period"] = np.where(df["time_period"].str.contains("Morning|Midday|Evening|Late_Hours"), df["time_period"], np.nan)
 		#uuid: keep only lines that do not contain capital letters
-		df["date_uuid"] = np.where(~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["date_uuid"])
+		df["date_uuid"] = np.where(df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["date_uuid"])
 		#df_cleaned = df.dropna() #remove line because it removes too many useful entries
 		df_cleaned= df
 		return df_cleaned
