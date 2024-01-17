@@ -32,6 +32,13 @@ pdf_path = "https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details
 card_details = de.retrieve_pdf_data(pdf_path=pdf_path)
 card_details.info()
 
+#Check card_number column for any non-digit characters that need to be cleaned
+    #First create a test column to work with and convert the data to string to make it searchable
+card_details["card_number_str"] = card_details["card_number"].astype(str)
+    #Then view any lines that contain non-digit characters
+card_details[card_details.card_number_str.str.contains("[\D+]")]
+    #Now that we know what the problematic lines are we can create a line of code to clean these up in the clean_card_data function
+
 #Step7: Clean card details
 card_details_cleaned = dcln.clean_card_data(card_details)
 
