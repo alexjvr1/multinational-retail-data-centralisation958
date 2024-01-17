@@ -3,23 +3,23 @@
 /* #Step1: Recast columns of dim_orders_table to the correct data type. 
 to uuid. NB Casting to UUID[] will cast to an array */
 
-ALTER TABLE dim_orders_table
+ALTER TABLE orders_table
 ALTER COLUMN date_uuid TYPE UUID USING date_uuid::UUID;
 
-ALTER TABLE dim_orders_table
+ALTER TABLE orders_table
 ALTER COLUMN user_uuid TYPE UUID USING user_uuid::UUID;
 
 -- The max number of characters indicated in brackets.  
-ALTER TABLE dim_orders_table
+ALTER TABLE orders_table
 ALTER COLUMN card_number TYPE VARCHAR(19) USING card_number::VARCHAR(19);
 
-ALTER TABLE dim_orders_table
+ALTER TABLE orders_table
 ALTER COLUMN store_code TYPE VARCHAR(11) USING store_code::VARCHAR(11);
 
-ALTER TABLE dim_orders_table
+ALTER TABLE orders_table
 ALTER COLUMN product_code TYPE VARCHAR(11) USING product_code::VARCHAR(11);
 
-ALTER TABLE dim_orders_table
+ALTER TABLE orders_table
 ALTER COLUMN product_quantity TYPE BIGINT USING product_quantity::SMALLINT;
 
 /* Step 2: Cast the columns of dim_users_table to the correct data types */
@@ -231,7 +231,7 @@ ADD PRIMARY KEY (date_uuid);
 ALTER TABLE dim_card_details
 ADD PRIMARY KEY (card_number);
 
-ALTER TABLE dim_users
+ALTER TABLE dim_users_table
 ADD PRIMARY KEY (user_uuid);
 
 ALTER TABLE dim_store_details
