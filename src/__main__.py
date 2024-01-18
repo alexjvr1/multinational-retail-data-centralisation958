@@ -63,6 +63,11 @@ retrieve_stores_endpoint="https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com
 store_data=de.retrieve_stores_data(retrieve_stores_endpoint, api_header_dict, number_of_stores)
 store_data.info()
 
+    #There are two columns for latitude: lat and latitude. Check if both of them have valid coordinate data
+print(store_data.lat.unique())
+print(store_data.latitude.unique())
+#Based on the output, the cleaning step will replace all data in lat with Nan
+
 #Step 10: Clean store information
 store_data_cleaned = dcln.clean_store_data(store_data)
 store_data_cleaned.info()
