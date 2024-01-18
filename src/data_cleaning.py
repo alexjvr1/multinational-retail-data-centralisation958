@@ -33,6 +33,7 @@ class DataCleaning:
 		df=dataframe
 		#Check that card number is digits only. 
 		#df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64") #Some of the correct card numbers contain special characters which just need to be stripped. This removes them from the dataset
+		df["card_number"] = df["card_number"].astype(str) #it's easier to work with the str dtype than object dtype
 		df["card_number"]=df["card_number"].str.replace("?", "") #Removes any "?"
 		df["card_number"] = np.where(df["card_number"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["card_number"]) #Replaces nonsense entries that are just capital letters
 		#Check dates of expiry_date and date_payment_confirmed
@@ -49,14 +50,21 @@ class DataCleaning:
 		#df = df.drop(["lat"], axis=1)  #removed this drop because the course requires us to merge the lat columns in SQL
 		#remove nonsense addresses defined as rows with just a single string (no "\n")
 		#df = df[df["address"].str.contains("\n", regex=True)]  #removes the web orders
+		df["address"] = df["address"].astype(str) #it's easier to work with str data
 		df.address = np.where(~df.address.str.contains("\n", regex=True), np.nan, df.address)
 		#Clean longitude and latitude to include only numbers. 
+		df["longitude"] = df["longitude"].astype(str) #it's easier to work 
 		df["longitude"] = df["longitude"].apply(pd.to_numeric, errors="coerce")
-		df["latitude"] = df["latitude"].apply(pd.to_numeric, errors="coerce")
+		df["latitude"] = df["latitude"].astype(str) #it's easier to work 
+		df["latitude"] = np.where(df[~df.latitude.str.contains(r"[0-9]\.", regex=True), np.nan, df.latitude])
+		df["lat"] = df["lat"].astype(str) #it's easier to work 
+		df["lat"] = np.nan #All the entries are nonsense or missing
 		#Locality: Remove nonsense submissions
 		#df = df[df["locality"].str.contains(r"^[a-zA-Z\s-]*$", regex=True)]  #This removes the web orders
+		df["locality"] = df["locality"].astype(str)
 		df.locality = np.where(~df.locality.str.contains(r"^[a-zA-Z\s-]*$", regex=True), np.nan, df.locality)
-		#Staff_numbers: remove rows that aren't integers
+		#Staff_numbers: Clean nonsense entries. And strip letters inserted into sensible staff number entries
+		
 		df["staff_numbers"] = df["staff_numbers"].apply(pd.to_numeric, errors="coerce")
 		#Ensure all store codes include a hyphen ("-"). Remove rows that do not
 		df["store_code"] = np.where(df["store_code"].str.contains("-"), df["store_code"], np.nan)
@@ -126,6 +134,7 @@ class DataCleaning:
 		#df = df[~df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True)] #changed this to assign to a specific column rather than subset the df 
 		df["date_uuid"] = np.where(df["date_uuid"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["date_uuid"]) #match dim_date_times
 		#df["card_number"]=pd.to_numeric(df["card_number"], errors="coerce").astype("Int64") #match dim_card_details. Removed because some card numbers contain special characters and just need to be stripped not replaced with Nan
+		df["card_number"] = df["card_number"].astype(str) #it's easier to work with the str dtype than object dtype
 		df["card_number"]=df["card_number"].str.replace("?", "") #match dim_card_details
 		df["card_number"] = np.where(df["card_number"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["card_number"])
 		#df["product_code"] = #match dim_products. Nothing done to product_code
