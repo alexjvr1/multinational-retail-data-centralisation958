@@ -66,6 +66,11 @@ ALTER TABLE dim_store_details
 ALTER TABLE dim_store_details
 RENAME COLUMN latitude_new TO latitude; 
 
+    /* CONCAT ignores NULL, so if there are two NULL cells this produces an empty cell.
+    Replace the empty cells with NULL */
+UPDATE dim_store_details
+SET latitude = NULL WHERE latitude = ''; 
+
 
 /* Step 4: set dim_store_details column data types */
 
