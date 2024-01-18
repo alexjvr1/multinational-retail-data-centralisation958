@@ -64,8 +64,10 @@ class DataCleaning:
 		df["locality"] = df["locality"].astype(str)
 		df.locality = np.where(~df.locality.str.contains(r"^[a-zA-Z\s-]*$", regex=True), np.nan, df.locality)
 		#Staff_numbers: Clean nonsense entries. And strip letters inserted into sensible staff number entries
-		
-		df["staff_numbers"] = df["staff_numbers"].apply(pd.to_numeric, errors="coerce")
+		df["staff_numbers"] = df["staff_numbers"].astype(str) #it's easier to work 
+		df["staff_numbers"] = np.where(df.staff_numbers.str.contains(r'[A-Z]{2}', regex=True), np.nan, df.staff_numbers)
+		df["staff_numbers"] = df["staff_numbers"].astype(str) #it's easier to work 
+		df["staff_numbers"] = df["staff_numbers"] = df.staff_numbers.str.replace('[A-Za-z]', '', regex=True)
 		#Ensure all store codes include a hyphen ("-"). Remove rows that do not
 		df["store_code"] = np.where(df["store_code"].str.contains("-"), df["store_code"], np.nan)
 		#Store type: remove anything that isn't one of ['Local', 'Super Store', 'Mall Kiosk', 'Outlet']
