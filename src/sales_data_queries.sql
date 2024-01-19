@@ -282,3 +282,24 @@ FROM dim_store_details
 GROUP BY country_code
 ORDER BY count DESC;   --order by descending
 
+SELECT * FROM dim_store_details
+WHERE country_code = 'GB';  --we have one more store than expected. Check which one looks incorrect
+
+-- Which locations have the most stores? 
+
+SELECT locality, count(*)
+FROM dim_store_details
+GROUP BY locality
+ORDER BY count DESC;   --order by descending
+
+
+-- Which months produced the largest amount of sales (i.e. cost)?
+
+SELECT  dim_date_times.month, SUM(orders_table.product_quantity*dim_products.product_price) AS total_sales  --SUM to get the aggregate when grouping by a different column
+	FROM orders_table
+		LEFT JOIN dim_products
+		ON dim_products.product_code = orders_table.product_code
+		LEFT JOIN dim_date_times
+		ON dim_date_times.date_uuid = orders_table.date_uuid
+	GROUP BY dim_date_times.month   
+	ORDER BY total_sales DESC; 
