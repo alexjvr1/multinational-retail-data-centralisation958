@@ -118,18 +118,18 @@ WHERE locality like '%nu%';
 /*Replace NULL with NA*/
 
 UPDATE dim_store_details
-SET locality = REPLACE(locality, 'NULL', 'NA'); 
+SET locality = REPLACE(locality, 'NULL', 'N/A'); 
 
 /* Task 4 (dim_products): Step 6: Remove the £ from the product_price column in the dim_products table */
 
 --Check which lines contain '£'
-SELECT product_price
-FROM dim_products
-WHERE product_price like '%£%';
+    SELECT product_price
+    FROM dim_products
+    WHERE product_price like '%£%';
 
---Replace '£' with ''
-UPDATE dim_products
-SET product_price = REPLACE(product_price, '£', ''); 
+    --Replace '£' with ''
+    UPDATE dim_products
+    SET product_price = REPLACE(product_price, '£', ''); 
 
 /* Step 7: Add a new human readable weight_class column that'll contain catagories based on the weight range of the products */
 
@@ -240,34 +240,34 @@ ALTER TABLE dim_users_table
 ADD PRIMARY KEY (user_uuid);
 
 ALTER TABLE dim_store_details
-ADD PRIMARY KEY (store_code)
+ADD PRIMARY KEY (store_code);
 
 ALTER TABLE dim_products
-ADD PRIMARY KEY (product_code)
+ADD PRIMARY KEY (product_code);
 
 /* Task 9: Add foreign key to orders_table */
 
-ALTER TABLE orders_table   --NEED TO ADD PRIMARY KEY TO CARD_DETAILS first
+ALTER TABLE orders_table   
 	ADD CONSTRAINT fk_card_number 
 		FOREIGN KEY (card_number) 
 			REFERENCES dim_card_details (card_number); 
 
-ALTER TABLE orders_table  --SUCCESS
+ALTER TABLE orders_table  
 	ADD CONSTRAINT fk_date_uuid 
 		FOREIGN KEY (date_uuid) 
 			REFERENCES dim_date_times (date_uuid);
 			
-ALTER TABLE orders_table  --SUCCESS
+ALTER TABLE orders_table  
 	ADD CONSTRAINT fk_product_code 
 		FOREIGN KEY (product_code) 
 			REFERENCES dim_products (product_code); 
 
-ALTER TABLE orders_table  --Need to add primary key to store_details
+ALTER TABLE orders_table  
 	ADD CONSTRAINT fk_store_code 
 		FOREIGN KEY (store_code) 
 			REFERENCES dim_store_details (store_code); 
 
-ALTER TABLE orders_table  --PROBLEM with some entries not matching
+ALTER TABLE orders_table  
 	ADD CONSTRAINT fk_user_uuid 
 		FOREIGN KEY (user_uuid) 
 			REFERENCES dim_users_table (user_uuid); 
