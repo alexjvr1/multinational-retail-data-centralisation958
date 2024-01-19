@@ -272,3 +272,13 @@ ALTER TABLE orders_table
 		FOREIGN KEY (user_uuid) 
 			REFERENCES dim_users_table (user_uuid); 
 
+
+/* QUERIES FOR THE STORE OWNERS */
+
+-- Which countries does the company operate in and how many stores are in each country? 
+
+SELECT country_code, count(*)
+FROM dim_store_details
+GROUP BY country_code
+ORDER BY count DESC;   --order by descending
+
