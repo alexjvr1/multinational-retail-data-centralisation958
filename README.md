@@ -4,8 +4,11 @@
 
 Aim: Set up a single SQL database of all sales data for Multinational Retail Co. 
 
-This is a pipeline to 1) collates data from different sources (AWS database, AWS s3 bucket, and API), 2) clean the data to remove erroneous entries, correct data type, and remove missing data, 3) store the data in an SQL database. 
+This is a pipeline to collate and clean data pertaining to the running of a company from different sources (AWS database, AWS s3 bucket, and API). The data are then stored in an SQL database. 
 
+## Quick start
+
+The pipeline is written in Python 3.9.5 
 
 
 ## Usage instructions
