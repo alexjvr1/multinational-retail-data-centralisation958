@@ -54,11 +54,11 @@ class DataCleaning:
 		df.address = np.where(~df.address.str.contains("\n", regex=True), np.nan, df.address)
 		#Clean longitude and latitude to include only numbers. 
 		df["longitude"] = df["longitude"].astype(str) #it's easier to work 
-		df["longitude"] = df["longitude"].apply(pd.to_numeric, errors="coerce")
+		df["longitude"] = np.where(~df.longitude.str.contains(r"[0-9]\.", regex=True), np.nan, df.longitude)
 		df["latitude"] = df["latitude"].astype(str) #it's easier to work 
-		df["latitude"] = np.where(df[~df.latitude.str.contains(r"[0-9]\.", regex=True), np.nan, df.latitude])
+		df["latitude"] = np.where(~df.latitude.str.contains(r"[0-9]\.", regex=True), np.nan, df.latitude)
 		df["lat"] = df["lat"].astype(str) #it's easier to work 
-		df["lat"] = np.nan #All the entries are nonsense or missing
+		df["lat"] = np.where(~df.lat.str.contains(r"[0-9]\.", regex=True), np.nan, df.lat) #All the entries are nonsense or missing
 		#Locality: Remove nonsense submissions
 		#df = df[df["locality"].str.contains(r"^[a-zA-Z\s-]*$", regex=True)]  #This removes the web orders
 		df["locality"] = df["locality"].astype(str)
@@ -79,9 +79,9 @@ class DataCleaning:
 		df["continent"] = np.where(df["continent"].str.contains("Europe|America"), df["continent"], np.nan)
 		#convert opening_date to datetime
 		df["opening_date"]=pd.to_datetime(df["opening_date"], format='%Y-%m-%d', errors='coerce')
-		#remove rows with NA
+		#remove rows where store_code is NA
+		df_cleaned = df.dropna(subset=['store_code'])
 		#df_cleaned = df.dropna() #removed this so that we can keep the empty lat column
-		df_cleaned=df
 		return df_cleaned
 	
 #Function takes a products pd.df and converts all weights to kg. It returns a pd.df
@@ -139,6 +139,7 @@ class DataCleaning:
 		df["card_number"] = df["card_number"].astype(str) #it's easier to work with the str dtype than object dtype
 		df["card_number"]=df["card_number"].str.replace("?", "") #match dim_card_details
 		df["card_number"] = np.where(df["card_number"].str.contains(r'\w*[A-Z]\w*', regex=True), np.nan, df["card_number"])
+		df = df.dropna(subset="card_number", axis=0) #remove any missing data from this column that will be used as a primary key
 		#df["product_code"] = #match dim_products. Nothing done to product_code
 		df["store_code"] = np.where(df["store_code"].str.contains("-"), df["store_code"], np.nan) #match dim_store_details
 		df["user_uuid"] = np.where(df["user_uuid"].str.contains("-"), df["user_uuid"], np.nan) #match dim_users_table
