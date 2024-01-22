@@ -303,3 +303,17 @@ SELECT  dim_date_times.month, ROUND(CAST(SUM(orders_table.product_quantity*dim_p
 		ON dim_date_times.date_uuid = orders_table.date_uuid
 	GROUP BY dim_date_times.month
 	ORDER BY total_sales DESC; 
+
+
+--How many sales are taking place online vs offline?
+--How many products are sold online vs offline?
+
+SELECT COUNT(orders_table.date_uuid) AS number_of_sales, SUM(orders_table.product_quantity) AS product_quantity_count,
+	CASE 
+		WHEN orders_table.store_code LIKE '%WEB%' THEN 'Web'
+		ELSE 'Offline'
+			END AS location
+FROM orders_table
+		GROUP BY location
+ORDER BY location DESC; --DESC/ASC on words orders alphabetically
+ 
