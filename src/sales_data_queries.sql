@@ -333,3 +333,46 @@ SELECT dim_store_details.store_type AS store_type,
 			ON orders_table.product_code = dim_products.product_code
 GROUP BY store_type
 ORDER BY "percentage_total(%)" DESC; -- define headers in "" to add special characters
+
+--What months over the last 31 years have had the highest sales value? 
+--This query simply orders by sales value and groups by year and month. It does not pick the top month within a year
+SELECT ROUND(CAST(SUM(orders_table.product_quantity*dim_products.product_price) AS NUMERIC),2) AS total_sales,
+dim_date_times.year AS year, dim_date_times.month AS month
+FROM orders_table
+	LEFT JOIN dim_date_times
+		ON orders_table.date_uuid = dim_date_times.date_uuid
+	LEFT JOIN dim_products
+		ON orders_table.product_code = dim_products.product_code
+GROUP BY year, month
+ORDER BY total_sales DESC LIMIT 10;
+
+
+--What is the staff headcount? 
+SELECT SUM(staff_numbers) as staff_numbers, country_code
+	FROM dim_store_details
+		GROUP BY country_code
+		ORDER BY staff_numbers DESC;
+
+--Which store type in DE has the highest sales? 
+SELECT ROUND(CAST(SUM(orders_table.product_quantity*dim_products.product_price) AS NUMERIC),2) AS total_sales,
+dim_store_details.store_type AS store_type, dim_store_details.country_code
+		FROM dim_store_details
+		LEFT JOIN orders_table
+			ON orders_table.store_code = dim_store_details.store_code
+		LEFT JOIN dim_products
+			ON orders_table.product_code = dim_products.product_code
+WHERE country_code = 'DE'
+GROUP BY store_type, country_code
+ORDER BY total_sales ASC;
+
+--What is the average time taken for a sale per year
+WITH t1 AS
+(SELECT year, month, day, date_uuid, 
+((year ||'-' || month ||'-'|| day ||' ' || timestamp)::timestamp) AS new_timestamp,
+LEAD(((year ||'-' || month ||'-'|| day ||' ' || timestamp)::timestamp), 1) OVER (ORDER BY year, month, day, timestamp::time ASC) AS next_sale
+FROM dim_date_times
+ORDER BY year, month, day ASC)
+SELECT t1.year, AVG(t1.next_sale - t1.new_timestamp) AS actual_time_taken
+FROM t1
+GROUP BY t1.year
+ORDER BY actual_time_taken DESC;
