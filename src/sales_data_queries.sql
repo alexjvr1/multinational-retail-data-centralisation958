@@ -317,3 +317,19 @@ FROM orders_table
 		GROUP BY location
 ORDER BY location DESC; --DESC/ASC on words orders alphabetically
  
+
+--What percentage of sales comes through each store type? 
+-- First Update null values in dim_store_details.store_type to 'Web portal'
+UPDATE dim_store_details
+SET store_type = COALESCE(store_type, 'Web portal');  --postgresql uses COALESCE instead of ISNULL
+
+SELECT dim_store_details.store_type AS store_type, 
+	ROUND(CAST(SUM(orders_table.product_quantity*dim_products.product_price) AS NUMERIC),2) AS total_sales,
+	ROUND(SUM(orders_table.product_quantity) * 100.0 / SUM(SUM(orders_table.product_quantity)) OVER (), 2) as "percentage_total(%)"  --Windows determined by GROUP BY later on
+	FROM dim_store_details
+		LEFT JOIN orders_table
+			ON orders_table.store_code = dim_store_details.store_code
+		LEFT JOIN dim_products
+			ON orders_table.product_code = dim_products.product_code
+GROUP BY store_type
+ORDER BY "percentage_total(%)" DESC; -- define headers in "" to add special characters
