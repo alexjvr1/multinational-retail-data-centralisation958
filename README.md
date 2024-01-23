@@ -16,13 +16,25 @@ Clone the repository:
 git clone https://github.com/alexjvr1/multinational-retail-data-centralisation958/tree/main
 ```
 
-Data extraction, cleaning, and uploading to SQL requirements: 
+Python modules required for data extraction, cleaning, and uploading to SQL: 
 ```
-Python 3.9.5
- 
+## The pipeline was created in Python 3.9.5 
+Package            Version
+------------------ ------------
+boto3              1.34.2
+json               2.0.9
+numpy              1.26.2
+pandas             2.1.4
+psycopg2           2.9.9
+PyYAML             6.0.1
+SQLAlchemy         2.0.23
+re                 2.2.1
+requests           2.31.0
+tabula             1.0.5
+tabula-py          2.9.0
 ```
 
-The pipeline has been tested in Python 3.9.5 
+
 
 
 ## Usage instructions
