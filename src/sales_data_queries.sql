@@ -367,12 +367,15 @@ ORDER BY total_sales ASC;
 
 --What is the average time taken for a sale per year
 WITH t1 AS
-(SELECT year, month, day, date_uuid, 
-((year ||'-' || month ||'-'|| day ||' ' || timestamp)::timestamp) AS new_timestamp,
-LEAD(((year ||'-' || month ||'-'|| day ||' ' || timestamp)::timestamp), 1) OVER (ORDER BY year, month, day, timestamp::time ASC) AS next_sale
-FROM dim_date_times
-ORDER BY year, month, day ASC)
-SELECT t1.year, AVG(t1.next_sale - t1.new_timestamp) AS actual_time_taken
+	(SELECT year, month, day, date_uuid, 
+	((year ||'-' || month ||'-'|| day ||' ' || timestamp)::timestamp) AS new_timestamp,
+	LEAD(((year ||'-' || month ||'-'|| day ||' ' || timestamp)::timestamp), 1) OVER (ORDER BY year, month, day, timestamp::time ASC) AS next_sale
+	FROM dim_date_times
+	ORDER BY year, month, day ASC)
+SELECT t1.year, 
+(CONCAT('"hours": ', (EXTRACT(HOUR FROM (AVG(t1.next_sale - t1.new_timestamp)))::int), ', "minutes": ',(EXTRACT(MINUTE FROM (AVG(t1.next_sale - t1.new_timestamp)))::int), ', "seconds": ', (FLOOR(EXTRACT(SECOND FROM (AVG(t1.next_sale - t1.new_timestamp))))::int), ', "milliseconds": ', (FLOOR(EXTRACT(MILLISECONDS FROM (AVG(t1.next_sale - t1.new_timestamp))))::int))) AS actual_time_taken
 FROM t1
 GROUP BY t1.year
 ORDER BY actual_time_taken DESC;
+
+
