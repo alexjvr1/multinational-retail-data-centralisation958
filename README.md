@@ -11,9 +11,18 @@ Next, the database is curated and a star-based database schema is created. Final
 
 ## Quick start
 
+Clone the repository: 
+```
+git clone https://github.com/alexjvr1/multinational-retail-data-centralisation958/tree/main
+```
 
+Data extraction, cleaning, and uploading to SQL requirements: 
+```
+Python 3.9.5
+ 
+```
 
-The pipeline is written in Python 3.9.5 
+The pipeline has been tested in Python 3.9.5 
 
 
 ## Usage instructions
