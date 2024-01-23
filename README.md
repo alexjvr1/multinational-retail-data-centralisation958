@@ -39,7 +39,13 @@ tabula-py          2.9.0
 
 ## Usage instructions
 
-The src/ directory contains all the Python scripts. The step by step pipeline is documented in __main__.py. Run this script to duplicate the steps used in this project. 
+The src/ directory contains all the scripts. The step by step pipeline is documented in __main__.py, and the SQL database setup and queries are documented in sales_data_queries.sql. Run these script to duplicate the steps used in this project:
+
+```
+python __main__.py
+```
+
+__main__.py: Data extraction and processing pipeline
 
 database_utils.py: modules to connect with and upload data to a database 
 
@@ -47,7 +53,7 @@ data_cleaning.py: modules to clean each dataset
 
 data_extraction.py: modules to download data from the various sources. 
 
-
+sales_data_queries.sql: SQL database setup and data queries. 
 
 ## Licence information
 
